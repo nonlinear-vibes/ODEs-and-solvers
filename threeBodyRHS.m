@@ -1,0 +1,43 @@
+function dx = threeBodyRHS(~, x)
+% THREEBODYRHS: Simplified three-body problem
+%
+% State x = [X; VX; Y; VY] in the rotating frame (angular speed = 1).
+% Primaries (masses) are fixed at (-mu, 0) and (+nu, 0), with mu+nu = 1.
+% Equations:
+%   X'  = VX
+%   Y'  = VY
+%   VX' =  X + 2*VY - nu*(X+mu)/r1^3 - mu*(X-nu)/r2^3
+%   VY' =  Y - 2*VX - nu*Y/r1^3     - mu*Y/r2^3
+%
+% Here we use the Earth–Moon mass ratio:
+%   mu = 0.012277471 (Moon), nu = 1 - mu (Earth).
+%
+% Inputs:
+%   ~ : time (unused; system is autonomous in rotating frame)
+%   x : 4x1 state [X; VX; Y; VY]
+% Output:
+%   dx: 4x1 time derivative
+
+
+% Mass parameters (for Earth–Moon system)
+mu = 0.012277471;     % secondary (Moon)
+nu = 1 - mu;          % primary   (Earth)
+
+
+% Unpack state
+X  = x(1);  VX = x(2);
+Y  = x(3);  VY = x(4);
+
+% Distances to the primaries
+r1sq = (X + mu)^2 + Y^2;      % distance^2 to (-mu, 0)
+r2sq = (X - nu)^2 + Y^2;      % distance^2 to (+nu, 0)
+r1_3 = r1sq^(3/2);
+r2_3 = r2sq^(3/2);
+
+% Dynamics in rotating frame
+aX = X + 2*VY - nu*(X + mu)/r1_3 - mu*(X - nu)/r2_3;
+aY = Y - 2*VX - nu*Y/r1_3       - mu*Y/r2_3;
+
+% Derivative
+dx = [VX; aX; VY; aY];
+end
