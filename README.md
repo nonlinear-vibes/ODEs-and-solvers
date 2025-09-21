@@ -31,7 +31,7 @@ Example ODEs:
 
 - `StiffEqn.m` — simple scalar stiff equation
 
-- `cr3bp.m` — Planar circular restricted three-body problem (Earth–Moon parameters)
+- `CR3BP.m` — Planar circular restricted three-body problem (Earth–Moon parameters)
 
 Demos:
 
