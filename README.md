@@ -66,6 +66,6 @@ Then call any solver:
 
 ## Environment:
 
-MATLAB R2018a+ recommended (uses basic language features).
+MATLAB R2018a+ recommended (tested on R2023b).
 
 No toolboxes required beyond base MATLAB.
