@@ -1,6 +1,6 @@
 # ODEs-and-solvers
 
-Some classic differential equations and basic numerical solvers
+Small (but expanding) collection of differential equations and numerical solvers
 
 ## Contents:
 Solvers:
