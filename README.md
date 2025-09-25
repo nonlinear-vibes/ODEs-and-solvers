@@ -34,6 +34,8 @@ Example ODEs:
 
 - `CR3BP.m` — Planar circular restricted three-body problem (Earth–Moon parameters)
 
+- `coupledPendulums.m` — Coupled pendulums on a cart with damping, exhibiting spontaneous synchronization
+
 Demos:
 
 - `demo.m` — Compare solvers on LV/VDP
