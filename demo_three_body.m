@@ -14,13 +14,13 @@ h0     = 1e-3;
 
 % MATLAB ode45
 opts45 = odeset('AbsTol',AbsTol,'RelTol',RelTol);
-[t_ode45, y_ode45] = ode45(@threeBodyRHS, Tspan, x0, opts45);
+[t_ode45, y_ode45] = ode45(@CR3BP, Tspan, x0, opts45);
 
 % Fixed-step RK4 (for reference)
-[t_rk4, y_rk4] = RK4(@threeBodyRHS, Tspan, x0, h0);
+[t_rk4, y_rk4] = RK4(@CR3BP, Tspan, x0, h0);
 
 % RK45 (Fehlberg 4(5)), accepting 4th-order state
-[t_rkf4, y_rkf4] = RKF45(@threeBodyRHS, Tspan, x0, ...
+[t_rkf4, y_rkf4] = RK45(@CR3BP, Tspan, x0, ...
     'AbsTol',AbsTol, 'RelTol',RelTol, 'InitialStep',h0, 'Safety',0.9, 'Order',4);
 
 
