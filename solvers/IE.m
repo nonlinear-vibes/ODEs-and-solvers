@@ -1,4 +1,4 @@
-function [t, y] = IE(fun, tspan, y0, h)
+function [t, y] = IE(fun, tspan, y0, h) 
 % IE  Implicit Euler (backward Euler) for y' = f(t,y)
 % Usage: [t, y] = IE(@LV, tspan, h, y0)
 % Solves the nonlinear step with Newton
@@ -29,5 +29,6 @@ for k = 1:N-1
     y(k+1,:) = x.';     
 end
 end
+
 
 
