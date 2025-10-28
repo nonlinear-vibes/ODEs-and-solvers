@@ -32,3 +32,4 @@ for k = 1:N-1
     y(k+1,:) = (yk + h/2*(fk+fun(tkp1, x)))';
 end
 end
+
