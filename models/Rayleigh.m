@@ -1,16 +1,13 @@
-function f = Rayleigh(~,y)
-% RAYLEIGH  Rayleigh oscillator (nonlinear damping on y')
-%   y1' = y2
-%   y2' = mu * (1 - y2^2) * y2 - y1
-%
-% This is the “Rayleigh equation” form: y'' + y = mu * (1 - (y')^2) * y'
-% (contrast with van der Pol: y'' + y = mu*(1 - y^2)*y')
+function f = Rayleigh(~, y, p)
+% Rayleigh oscillator (nonlinear damping on y').
+% y1' = y2
+% y2' = mu*(1 - y2^2)*y2 - y1
+% (Rayleigh form: y'' + y = mu*(1 - (y')^2)*y')
 
-% nonlinearity / damping strength
-mu = 3;
+if nargin < 3 || isempty(p), p = struct(); end
+if ~isfield(p,'mu'), p.mu = 3.0; end
 
-% RHS
-f = [ y(2);
-      mu*(1 - y(2)^2)*y(2) - y(1) ];
-
+y1 = y(1); y2 = y(2);
+f = [ y2;
+      p.mu*(1 - y2^2)*y2 - y1 ];
 end
