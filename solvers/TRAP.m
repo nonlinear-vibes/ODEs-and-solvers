@@ -13,9 +13,6 @@ y = zeros(N, m);
 
 y(1,:) = y0';
 
-% Newton settings (kept simple for v1)
-maxIt = 10;
-
 for k = 1:N-1
     tk   = t(k);
     tkp1 = t(k+1);
@@ -28,7 +25,8 @@ for k = 1:N-1
     x  = yk + h*fk;
 
     % Newton iterations at (t_{k+1}, x)
-    x = NewtonIt(fun, tkp1, x, yk, fk, h, maxIt);
+    G = @(x) x - yk - 0.5*h*(fk + fun(tkp1, x));
+    x = NewtonIt(G, x);
 
     % trapezoid update (re-uses fk, evaluates f at the converged x)
     y(k+1,:) = (yk + h/2*(fk+fun(tkp1, x)))';
