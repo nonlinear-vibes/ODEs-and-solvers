@@ -1,8 +1,10 @@
-function dx = CR3BP(~, x)
-% THREEBODYRHS: Simplified three-body problem
+function dx = CR3BP(~, x, p)
+% CR3BP: Circular restricted three-body problem in rotating frame (ω=1).
+% State x = [X; VX; Y; VY]. Primaries at (-mu,0) and ((1-mu),0).
 %
-% State x = [X; VX; Y; VY] in the rotating frame (angular speed = 1).
-% Primaries (masses) are fixed at (-mu, 0) and (+nu, 0), with mu+nu = 1.
+% Params:
+%   p.mu ∈ (0, 0.5)  mass parameter (default Earth–Moon: 0.012277471)
+%
 % Equations:
 %   X'  = VX
 %   Y'  = VY
@@ -13,16 +15,14 @@ function dx = CR3BP(~, x)
 %   mu = 0.012277471 (Moon), nu = 1 - mu (Earth).
 %
 % Inputs:
-%   ~ : time (unused; system is autonomous in rotating frame)
+%   ~ : time (unused; system is autonomous in the rotating frame)
 %   x : 4x1 state [X; VX; Y; VY]
 % Output:
 %   dx: 4x1 time derivative
 
-
-% Mass parameters (for Earth–Moon system)
-mu = 0.012277471;     % secondary (Moon)
-nu = 1 - mu;          % primary   (Earth)
-
+if nargin < 3 || isempty(p), p = struct(); end
+if ~isfield(p,'mu'), p.mu = 0.012277471; end
+nu = 1 - p.mu;
 
 % Unpack state
 X  = x(1);  VX = x(2);
