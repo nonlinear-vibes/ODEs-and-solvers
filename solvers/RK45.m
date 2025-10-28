@@ -1,4 +1,4 @@
-function [t, Y] = RKF45(fun, tspan, y0, varargin)
+function [t, Y] = RK45(fun, tspan, y0, varargin)
 % RK45  Runge–Kutta–Fehlberg 4(5) with adaptive steps.
 %
 % Sharp tolerances: per-component absolute AND relative tests must both pass.
@@ -58,7 +58,7 @@ AbsTol = opts.AbsTol;
 if isscalar(AbsTol), AbsTol = AbsTol*ones(ny,1); else, AbsTol = AbsTol(:); end
 assert(numel(AbsTol) == ny, 'AbsTol size must match state dimension.');
 RelTol = opts.RelTol;
-sfty = opts.Safety;
+sfty   = opts.Safety;
 
 % initial step and bounds
 if isempty(opts.InitialStep), h = (tf - t0)/100; else, h = opts.InitialStep; end
