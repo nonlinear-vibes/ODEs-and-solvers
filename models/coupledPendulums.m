@@ -1,20 +1,26 @@
-function dx = coupledPendulums(~, x)
-% coupledPendulums:  RHS for a cart with two pendulums (planar).
-% State vector (6×1):
-%   x = [phi1; dphi1; phi2; dphi2; q; dq]
-% where:
-%   phi1, phi2  : pendulum angles from the vertical (radians)
-%   q           : cart horizontal position
+function dx = coupledPendulums(~, x, p)
+% coupledPendulums: RHS for a cart with two pendulums (planar).
+% State (6×1): x = [phi1; dphi1; phi2; dphi2; q; dq]
+%   phi1, phi2  : pendulum angles from vertical [rad]
+%   q           : cart horizontal position [m]
 %   d(·)        : time derivative
+%
+% Parameters in p (all optional; defaults below):
+%   m1, m2  : bob masses [kg]
+%   M       : cart mass [kg]
+%   l       : pendulum length [m]
+%   g       : gravity [m/s^2]
+%   c_cart  : cart linear damping [N·s/m]
+%   c_piv   : pivot viscous damping [N·m·s/rad] each pendulum
 
-% Dynamics parameters:
-m1 = 0.1;     % pendulum bob mass
-m2 = 0.1;     % pendulum bob mass
-M  = 5;       % cart mass
-l  = 0.2;     % pendulum length
-g  = 9.81;    % gravity
-c_cart = 0.2; % N·s/m   (cart linear damping)
-c_piv  = 0;   % N·m·s/rad per pendulum (pivot damping)
+if nargin < 3 || isempty(p), p = struct(); end
+if ~isfield(p,'m1'),     p.m1     = 0.1;  end
+if ~isfield(p,'m2'),     p.m2     = 0.1;  end
+if ~isfield(p,'M'),      p.M      = 5.0;  end
+if ~isfield(p,'l'),      p.l      = 0.2;  end
+if ~isfield(p,'g'),      p.g      = 9.81; end
+if ~isfield(p,'c_cart'), p.c_cart = 0.2;  end
+if ~isfield(p,'c_piv'),  p.c_piv  = 0.0;  end
 
 % Unpack state
 phi1 = x(1);   dphi1 = x(2);
@@ -25,34 +31,26 @@ q    = x(5);   dq    = x(6);
 s1 = sin(phi1);  c1 = cos(phi1);
 s2 = sin(phi2);  c2 = cos(phi2);
 
-% Convenience factor from the cart equation
-%   ddq = α1 (s1*ω1^2 - c1*φ1'') + α2 (s2*ω2^2 - c2*φ2''),  
-%   α1= m1*l/(M+m1+m2), α2= m2*l/(M+m1+m2)
-alpha1 = m1*l/(M + m1 + m2);
-alpha2 = m2*l/(M + m1 + m2);
+% Convenience factors from the cart equation
+alpha1 = p.m1*p.l/(p.M + p.m1 + p.m2);
+alpha2 = p.m2*p.l/(p.M + p.m1 + p.m2);
 
-% From pendulum equations:
-%   φ1'' = -(g/l) s1 - (ddq/l) c1
-%   φ2'' = -(g/l) s2 - (ddq/l) c2
-% Substitute into the cart equation to get ddq:
-denom = 1 - c1^2*alpha1/l - c2^2*alpha2/l;
+% Denominator after eliminating ddphi1, ddphi2 via pendulum eqs
+denom = 1 - c1^2*alpha1/p.l - c2^2*alpha2/p.l;
+if abs(denom) < 1e-12, denom = sign(denom)*1e-12; end
 
-% ddq = (alpha1 * (s1*dphi1^2 + (g/l)*c1*s1) + alpha2 * (s2*dphi2^2 + (g/l)*c2*s2) - (c_cart/(M+m1+m2))*dq) / denom;
 % Numerator parts
-num_core = alpha1*( s1*dphi1^2 + (g/l)*c1*s1 ) + ...
-           alpha2*( s2*dphi2^2 + (g/l)*c2*s2 );
-
-num_cartDamp = -(c_cart/(M+m1+m2))*dq;
-
-% If pivot damping present, include its feedback into ddq:
-num_pivDamp  = (c_piv/(m1*l^2))*alpha1*c1*dphi1 + ...
-               (c_piv/(m2*l^2))*alpha2*c2*dphi2;
+num_core     = alpha1*( s1*dphi1^2 + (p.g/p.l)*c1*s1 ) + ...
+               alpha2*( s2*dphi2^2 + (p.g/p.l)*c2*s2 );
+num_cartDamp = -(p.c_cart/(p.M+p.m1+p.m2))*dq;
+num_pivDamp  = (p.c_piv/(p.m1*p.l^2))*alpha1*c1*dphi1 + ...
+               (p.c_piv/(p.m2*p.l^2))*alpha2*c2*dphi2;
 
 ddq = (num_core + num_cartDamp + num_pivDamp) / denom;
 
 % Angular accelerations:
-ddphi1 = -(g/l)*s1 - (ddq/l)*c1 - (c_piv/(m1*l^2))*dphi1;
-ddphi2 = -(g/l)*s2 - (ddq/l)*c2 - (c_piv/(m2*l^2))*dphi2;
+ddphi1 = -(p.g/p.l)*s1 - (ddq/p.l)*c1 - (p.c_piv/(p.m1*p.l^2))*dphi1;
+ddphi2 = -(p.g/p.l)*s2 - (ddq/p.l)*c2 - (p.c_piv/(p.m2*p.l^2))*dphi2;
 
 % Assemble derivative
 dx = [dphi1; ddphi1; dphi2; ddphi2; dq; ddq];
