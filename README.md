@@ -36,6 +36,8 @@ Example ODEs:
 
 - `coupledPendulums.m` — Coupled pendulums on a cart with damping, exhibiting spontaneous synchronization
 
+- `SIR` — Simple Suscuptible-Infected-Recovered compartmental epidemic model
+
 Demos:
 
 - `demo.m` — Compare solvers on LV/VDP
