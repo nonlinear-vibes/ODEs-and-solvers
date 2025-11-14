@@ -13,10 +13,7 @@ Solvers:
 
 - `RK4.m` — Classic 4th-order Runge–Kutta
 
-- `RKF45.m `— Runge–Kutta–Fehlberg 4(5) with adaptive steps <br />
-$~~~~~~~~~~~~~~~~~~~~~~~~~$ Sharp tolerances: per-component absolute and relative tests must both pass. <br />
-$~~~~~~~~~~~~~~~~~~~~~~~~~$ Propagate either the 5th-order state (standard) or the 4th-order state (often a bit more robust on <br />
-$~~~~~~~~~~~~~~~~~~~~~~~~~$ tricky trajectories).
+- `RKF45.m `— Runge–Kutta–Fehlberg 4(5) with adaptive steps
 
 Utils:
   
